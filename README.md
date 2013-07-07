@@ -19,9 +19,16 @@ Requires node >= 0.8
 // see implementation notes below
 console.log(process.pid);
 
-// after this point, we are a daemon
-require('daemon')();
+//Open file descriptor for IO redirection 
+var fs = require('fs-ext');
+var fd = fs.openSync("/tmp/foo_daemon.log", 'a');
 
+// after this point, we are a daemon
+require('daemon')(
+  stdout: fd,
+  stderr: fd
+  );
+  
 // different pid because we are now forked
 // original parent has exited
 console.log(process.pid);
